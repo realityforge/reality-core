@@ -7,7 +7,7 @@ class Reality::TestLogging < Reality::TestCase
 
   def test_basic_operation
     io = StringIO.new('', 'w')
-    Reality::Logging.configure(MyModule, io)
+    Reality::Logging.configure(MyModule, ::Logger::INFO, io)
 
     assert_true MyModule::Logger.is_a?(::Logger)
 

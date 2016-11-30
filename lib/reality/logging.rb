@@ -18,9 +18,9 @@ module Reality
   module Logging
     class << self
       # noinspection RubyDynamicConstAssignment
-      def configure(module_type, stream = STDOUT)
+      def configure(module_type, level = ::Logger::INFO, stream = STDOUT)
         logger = ::Logger.new(stream)
-        logger.level = ::Logger::INFO
+        logger.level = level
         logger.formatter = proc { |severity, datetime, progname, msg| "#{msg}\n" }
 
         module_type.const_set(:Logger, logger)
