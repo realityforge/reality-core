@@ -13,6 +13,8 @@
 #
 
 module Reality #nodoc
+
+  # Base class used for elements configurable via options
   class BaseElement
     def initialize(options = {})
       self.options = options
