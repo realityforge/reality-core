@@ -7,6 +7,9 @@ class Reality::TestBaseElement < Reality::TestCase
     attr_accessor :b
     attr_accessor :c
 
+    def to_s
+      'TestElement'
+    end
   end
 
   def test_basic_operation
@@ -26,7 +29,7 @@ class Reality::TestBaseElement < Reality::TestCase
     assert_equal '2', element2.b
     assert_equal '3', element2.c
 
-    assert_raise(NoMethodError) do
+    assert_raise_message("Attempted to configure property \"x\" on Reality::TestBaseElement::TestElement but property does not exist.") do
       TestElement.new(:x => '1')
     end
   end
