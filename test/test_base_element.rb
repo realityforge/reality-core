@@ -37,7 +37,7 @@ class Reality::TestBaseElement < Reality::TestCase
   class TestElementA < Reality.base_element
   end
 
-  class TestElementB < Reality.base_element(:parent_key => 'container')
+  class TestElementB < Reality.base_element(:container_key => 'container')
   end
 
   class TestElementC < Reality.base_element(:name => true)
@@ -49,7 +49,7 @@ class Reality::TestBaseElement < Reality::TestCase
   class TestElementE < Reality.base_element(:name => true, :key => true)
   end
 
-  class TestElementF < Reality.base_element(:parent_key => 'container', :name => true, :key => true)
+  class TestElementF < Reality.base_element(:container_key => 'container', :name => true, :key => true)
   end
 
   class TestElementG < Reality.base_element(:pre_config_code => 'self.foo = 1')

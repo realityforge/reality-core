@@ -40,7 +40,7 @@ module Reality #nodoc
   def self.base_element(options = {})
     type = Class.new(BaseElement)
 
-    parent_key = options[:parent_key]
+    container_key = options[:container_key]
     pre_config_code = options[:pre_config_code]
     has_name = !!options[:name]
     has_key = !!options[:key]
@@ -50,12 +50,12 @@ module Reality #nodoc
     parameters = []
     initializers = ''
 
-    if parent_key
-      code += "attr_reader :#{parent_key}\n"
-      parameters << parent_key
+    if container_key
+      code += "attr_reader :#{container_key}\n"
+      parameters << container_key
       initializers += <<-RUBY
-        @#{parent_key} = #{parent_key}
-        raise "Nil #{parent_key} parameter passed to #{self.class} instance" if @#{parent_key}.nil?
+        @#{container_key} = #{container_key}
+        raise "Nil #{container_key} parameter passed to #{self.class} instance" if @#{container_key}.nil?
       RUBY
     end
 
