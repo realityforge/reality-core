@@ -33,4 +33,72 @@ class Reality::TestBaseElement < Reality::TestCase
       TestElement.new(:x => '1')
     end
   end
+
+  class TestElementA < Reality.base_element
+  end
+
+  class TestElementB < Reality.base_element(:parent_key => 'container')
+  end
+
+  class TestElementC < Reality.base_element(:name => true)
+  end
+
+  class TestElementD < Reality.base_element(:key => true)
+  end
+
+  class TestElementE < Reality.base_element(:name => true, :key => true)
+  end
+
+  class TestElementF < Reality.base_element(:parent_key => 'container', :name => true, :key => true)
+  end
+
+  class TestElementG < Reality.base_element(:pre_config_code => 'self.foo = 1')
+    attr_accessor :foo
+  end
+
+  def test_base_element_constructor
+    begin
+      e = TestElementA.new
+      assert_raise(NoMethodError) { e.key }
+      assert_raise(NoMethodError) { e.name }
+    end
+
+    begin
+      e = TestElementB.new('FakeContainer')
+      assert_raise(NoMethodError) { e.key }
+      assert_raise(NoMethodError) { e.name }
+      assert_equal e.container, 'FakeContainer'
+    end
+
+    begin
+      e = TestElementC.new('myName')
+      assert_raise(NoMethodError) { e.key }
+      assert_equal e.name, 'myName'
+    end
+
+    begin
+      e = TestElementD.new('myKey')
+      assert_raise(NoMethodError) { e.name }
+      assert_equal e.key, 'myKey'
+    end
+
+    begin
+      e = TestElementE.new('myKey', 'myName')
+      assert_equal e.key, 'myKey'
+      assert_equal e.name, 'myName'
+    end
+
+    begin
+      e = TestElementF.new('FakeContainer', 'myKey', 'myName')
+      assert_equal e.container, 'FakeContainer'
+      assert_equal e.key, 'myKey'
+      assert_equal e.name, 'myName'
+    end
+
+    begin
+      TestElementG.new do |e|
+        assert_equal e.foo, 1
+      end
+    end
+  end
 end

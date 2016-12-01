@@ -36,4 +36,58 @@ module Reality #nodoc
       end
     end
   end
+
+  def self.base_element(options = {})
+    type = Class.new(BaseElement)
+
+    parent_key = options[:parent_key]
+    pre_config_code = options[:pre_config_code]
+    has_name = !!options[:name]
+    has_key = !!options[:key]
+
+    code = ''
+
+    parameters = []
+    initializers = ''
+
+    if parent_key
+      code += "attr_reader :#{parent_key}\n"
+      parameters << parent_key
+      initializers += <<-RUBY
+        @#{parent_key} = #{parent_key}
+        raise "Nil #{parent_key} parameter passed to #{self.class} instance" if @#{parent_key}.nil?
+      RUBY
+    end
+
+    if has_key
+      code += "attr_reader :key\n"
+      parameters << 'key'
+      initializers += <<-RUBY
+        @key = key
+        raise "Nil key parameter passed to #{self.class} instance" if @key.nil?
+      RUBY
+    end
+
+    if has_name
+      code += "attr_reader :name\n"
+      parameters << 'name'
+      initializers += <<-RUBY
+        @name = name
+        raise "Nil name parameter passed to #{self.class} instance" if @name.nil?
+      RUBY
+    end
+
+
+    parameters = parameters.join(', ')
+    parameters += ', ' if parameters.size > 0
+    code += <<RUBY
+    def initialize(#{parameters}options = {}, &block)
+      #{initializers}
+      #{pre_config_code}
+      super(options, &block)
+    end
+RUBY
+    type.class_eval(code)
+    type
+  end
 end
