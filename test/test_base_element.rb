@@ -96,8 +96,8 @@ class Reality::TestBaseElement < Reality::TestCase
     end
 
     begin
-      TestElementG.new do |e|
-        assert_equal e.foo, 1
+      TestElementG.new do |te|
+        assert_equal te.foo, 1
       end
     end
   end
