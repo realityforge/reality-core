@@ -17,6 +17,37 @@ require 'logger'
 module Reality
   module Logging
     class << self
+      # Set the levels on an array of loggers.
+      # The levels parameter must be an array matching the number of loggers supplied or a single level.
+      # If a block is supplied then the levels are set to the specified values for the duration of the
+      # block and then reset to original values after the block completes.
+      def set_levels(levels, *loggers)
+        if levels.is_a?(Array) && levels.size != loggers.size
+          raise "Attempting to set log levels using an array of size #{levels.size} that does not match the number of loggers supplied #{loggers.size}"
+        end
+
+        if block_given?
+          saved_levels = []
+          loggers.each_with_index do |logger, index|
+            saved_levels[index] = logger.level
+          end
+          begin
+            loggers.each_with_index do |logger, index|
+              logger.level = levels.is_a?(Array) ? levels[index] : levels
+            end
+            yield
+          ensure
+            loggers.each_with_index do |logger, index|
+              logger.level = saved_levels[index]
+            end
+          end
+        else
+          loggers.each_with_index do |logger, index|
+            logger.level = levels.is_a?(Array) ? levels[index] : levels
+          end
+        end
+      end
+
       # noinspection RubyDynamicConstAssignment
       def configure(module_type, level = ::Logger::INFO, stream = STDOUT)
         logger = ::Logger.new(stream)
