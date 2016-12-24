@@ -103,13 +103,13 @@ class Reality::TestLogging < Reality::TestCase
       MyModule2.info('Hello from log system')
     end
 
-    assert_raise(Test::Unit::AssertionFailedError.new("<\"Hello from log system\\n\"> expected but was\n<\"\">.")) do
+    assert_raise_kind_of(Test::Unit::AssertionFailedError) do
       mytest.assert_logging_message(MyModule2, 'Hello from log system') do
         # There is no message
       end
     end
 
-    assert_raise(Test::Unit::AssertionFailedError.new('<RuntimeError(<Hello from log system>)> exception expected but none was thrown.')) do
+    assert_raise_kind_of(Test::Unit::AssertionFailedError) do
       mytest.assert_logging_error(MyModule2, 'Hello from log system') do
         # Should fail as there is only a message and not an error
         MyModule2.info('Hello from log system')
