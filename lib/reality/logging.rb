@@ -75,5 +75,53 @@ module Reality
         end
       end
     end
+
+    # Module that should be mixed into base test class to test dependent libraries.
+    # It is expected that the class this is mixed into supplies a assert_raise method.
+    module Assertions
+      # for the specified log container capture the log output during blocks
+      # execution and return as a string
+      def capture_logging(log_container, &block)
+        raise 'capture_logging called but no block supplied.' unless block_given?
+        logger = log_container.const_get(:Logger)
+
+        logdev = logger.instance_variable_get('@logdev')
+        original_dev = logdev.instance_variable_get('@dev')
+
+        capture_io = StringIO.new
+        begin
+          logdev.instance_variable_set('@dev', capture_io)
+          yield block
+          return capture_io.string
+        ensure
+          logdev.instance_variable_set('@dev', original_dev)
+        end
+      end
+
+      # For the specified log container, capture the log output during blocks
+      # execution and match specified message. A new line is appended to
+      # expected_message as the logging system appends one.
+      def assert_logging_message(log_container, expected_message, &block)
+        raise 'assert_logging_message called but no block supplied.' unless block_given?
+
+        result = capture_logging(log_container) do
+          yield block
+        end
+
+        assert_equal "#{expected_message}\n", result
+      end
+
+      # For the specified log container, capture the log output during blocks
+      # execution and match specified message. Also ensure an exception is raised
+      # with the same message
+      def assert_logging_error(log_container, expected_message, &block)
+        raise 'assert_logging_error called but no block supplied.' unless block_given?
+        assert_logging_message(log_container, expected_message) do
+          assert_raise(RuntimeError.new(expected_message)) do
+            yield block
+          end
+        end
+      end
+    end
   end
 end
