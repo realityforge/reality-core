@@ -14,3 +14,4 @@
 
 require 'reality/base_element'
 require 'reality/logging'
+require 'reality/options'
