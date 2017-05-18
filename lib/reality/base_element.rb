@@ -42,6 +42,7 @@ module Reality #nodoc
 
     container_key = options[:container_key]
     pre_config_code = options[:pre_config_code]
+    post_config_code = options[:post_config_code]
     has_name = !!options[:name]
     has_key = !!options[:key]
 
@@ -85,6 +86,7 @@ module Reality #nodoc
       #{initializers}
       #{pre_config_code}
       super(options, &block)
+      #{post_config_code}
     end
 RUBY
     type.class_eval(code)
