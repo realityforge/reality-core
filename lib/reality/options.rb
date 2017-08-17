@@ -34,4 +34,3 @@ module Reality
     end
   end
 end
-
